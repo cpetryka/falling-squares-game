@@ -4,7 +4,9 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
@@ -13,6 +15,7 @@ import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Random;
 
@@ -95,13 +98,90 @@ public class FallingSquaresGame extends Application {
             public void handle(long now) {
                 // There's no sense in updating the game if the game is over
                 if (!gameOver) {
-                    // updateGame();
+                    updateGame();
                 }
             }
         };
 
         startTime = System.currentTimeMillis();
         gameLoop.start();
+    }
+
+    // Update the game
+    private void updateGame() {
+        // Check if the game should end
+        long elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
+
+        if (elapsedTime >= GAME_DURATION) {
+            endGame();
+            return;
+        }
+
+        // Create a square with a certain probability
+        if (random.nextDouble() < SQUARE_CREATION_PROBABILITY) {
+            createSquare();
+        }
+
+        // Move all the squares down
+        Iterator<Rectangle> iterator = squares.iterator();
+        while (iterator.hasNext()) {
+            Rectangle square = iterator.next();
+            square.setLayoutY(square.getLayoutY() + SQUARE_SPEED); // Move the square down
+
+            if (square.getLayoutY() >= (PANEL_HEIGHT - SQUARE_SIZE)) {
+                iterator.remove();
+                gamePane.getChildren().remove(square);
+                missedSquares++;
+                updateScoreLabel();
+            }
+        }
+    }
+
+    // Create a square and add it to the game pane at a random position
+    private void createSquare() {
+        Rectangle square = new Rectangle(SQUARE_SIZE, SQUARE_SIZE, Color.MEDIUMBLUE);
+        square.setLayoutX(random.nextInt(WINDOW_WIDTH - SQUARE_SIZE));
+        square.setOnMousePressed(this::handleMouseClick);
+        gamePane.getChildren().add(square);
+        squares.add(square);
+        totalSquares++;
+    }
+
+    // Update the score label
+    private void updateScoreLabel() {
+        double score = (killedSquares / (double)(killedSquares + missedSquares)) * 100;
+        scoreLabel.setText(String.format("Current score: %.0f%%", score));
+    }
+
+    // Method that ends the game and shows an alert with the final score
+    private void endGame() {
+        gameOver = true;
+
+        // Show an alert with the final score
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Game Over");
+        alert.setHeaderText(null);
+        alert.setContentText("You " + (killedSquares > missedSquares ? "won!" : "lost!") + " You managed to kill " + killedSquares + " out of " + (killedSquares + missedSquares) + " squares.");
+        alert.initOwner(gamePane.getScene().getWindow()); // Makes the alert appear in the center of the gamePane
+        alert.setOnCloseRequest(event -> {
+            alert.close();
+            System.exit(0);
+        });
+        alert.show();
+    }
+
+    // Handle the mouse click on a square
+    private void handleMouseClick(MouseEvent event) {
+        // There's no sense in handling the mouse click if the game is over
+        if (!gameOver) {
+            Rectangle clickedSquare = (Rectangle) event.getSource();
+            gamePane.getChildren().remove(clickedSquare);
+            squares.remove(clickedSquare);
+            killedSquares++;
+
+            // After a square is killed, update the score label
+            updateScoreLabel();
+        }
     }
 
     public static void main(String[] args) {
