@@ -6,8 +6,10 @@ import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Background;
+import javafx.scene.layout.Border;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
@@ -90,6 +92,7 @@ public class FallingSquaresGame extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.setTitle("Falling Squares Game");
+        primaryStage.getIcons().add(new Image("file:src/main/java/petryka/cezary/fallingsquaresgame/icon/icon.png"));
         primaryStage.show();
 
         // Start the game and create an animation timer that will update the game
