@@ -1,0 +1,21 @@
+#root {
+    -fx-background-image: url("../images/backgrounds/background.jpg");
+    -fx-background-size: cover;
+    // -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+#game-pane {
+    -fx-background-color: rgba(0, 0, 0, 0.1);
+}
+
+/* Styles applied to squares */
+#game-pane * {
+    -fx-effect: innershadow(three-pass-box, rgba(0,0,0,0.6), 5, 0, 0, 0);
+}
+
+#score-label {
+    -fx-font-size: 20;
+    -fx-font-weight: bold;
+    -fx-background-color: #fff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 1, 0, 0, -1);
+}

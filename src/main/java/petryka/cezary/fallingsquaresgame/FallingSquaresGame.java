@@ -8,10 +8,7 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Label;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
-import javafx.scene.layout.Background;
-import javafx.scene.layout.Border;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.Pane;
+import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
@@ -57,29 +54,30 @@ public class FallingSquaresGame extends Application {
 
         // Create the game pane
         gamePane = new Pane();
+        gamePane.setId("game-pane");
         gamePane.setPrefSize(WINDOW_WIDTH, PANEL_HEIGHT);
-        gamePane.setBackground(Background.fill(Color.GOLD));
 
         // Create the score label
         scoreLabel = new Label("Current score: 0%");
+        scoreLabel.setId("score-label");
         scoreLabel.setPrefSize(WINDOW_WIDTH, (double)WINDOW_HEIGHT - PANEL_HEIGHT);
         scoreLabel.setAlignment(Pos.CENTER);
-        scoreLabel.setStyle("-fx-font-size: 20; -fx-font-weight: bold;");
 
         // Create the root pane and add the game pane and the score label to it
         BorderPane root = new BorderPane();
+        root.setId("root");
         root.setCenter(gamePane);
         root.setBottom(scoreLabel);
 
         // Create the scene and set it to the stage
         Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+        scene.getStylesheets().add("file:src/main/java/petryka/cezary/fallingsquaresgame/style/style.css");
 
         // When the width of the scene changes, the width of the game pane and the score label must change accordingly
         scene.widthProperty().addListener((observable, oldValue, newValue) -> {
             WINDOW_WIDTH = newValue.intValue();
             gamePane.setPrefWidth(WINDOW_WIDTH);
             scoreLabel.setPrefWidth(WINDOW_WIDTH);
-            System.out.println("Width changed to " + WINDOW_WIDTH);
         });
 
         // When the height of the scene changes, the height of the game pane and the score label must change accordingly
@@ -92,7 +90,7 @@ public class FallingSquaresGame extends Application {
 
         primaryStage.setScene(scene);
         primaryStage.setTitle("Falling Squares Game");
-        primaryStage.getIcons().add(new Image("file:src/main/java/petryka/cezary/fallingsquaresgame/icon/icon.png"));
+        primaryStage.getIcons().add(new Image("file:src/main/java/petryka/cezary/fallingsquaresgame/images/icons/icon.png"));
         primaryStage.show();
 
         // Start the game and create an animation timer that will update the game
@@ -142,7 +140,7 @@ public class FallingSquaresGame extends Application {
 
     // Create a square and add it to the game pane at a random position
     private void createSquare() {
-        Rectangle square = new Rectangle(SQUARE_SIZE, SQUARE_SIZE, Color.MEDIUMBLUE);
+        Rectangle square = new Rectangle(SQUARE_SIZE, SQUARE_SIZE, Color.DARKBLUE);
         square.setLayoutX(random.nextInt(WINDOW_WIDTH - SQUARE_SIZE));
         square.setOnMousePressed(this::handleMouseClick);
         gamePane.getChildren().add(square);
