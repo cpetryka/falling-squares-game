@@ -22,9 +22,9 @@ public class FallingSquaresGame extends Application {
     private static final Random random = new Random();
 
     // Technical constants
-    private int WINDOW_WIDTH = 400;
-    private int WINDOW_HEIGHT = 500;
-    private int PANEL_HEIGHT = 440;
+    private static int WINDOW_WIDTH = 400;
+    private static int WINDOW_HEIGHT = 500;
+    private static int PANEL_HEIGHT = 440;
     private static final int SQUARE_SIZE = 40;
     private static final int SQUARE_SPEED = 3;
     private static final int GAME_DURATION = 20; // in seconds
@@ -94,7 +94,7 @@ public class FallingSquaresGame extends Application {
         primaryStage.show();
 
         // Start the game and create an animation timer that will update the game
-        AnimationTimer gameLoop = new AnimationTimer() {
+        var gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 // There's no sense in updating the game if the game is over
