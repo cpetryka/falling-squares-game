@@ -1,7 +1,39 @@
 #root {
     -fx-background-image: url("../images/backgrounds/background.jpg");
     -fx-background-size: cover;
-    // -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.8), 10, 0, 0, 0);
+}
+
+#menu-pane {
+    -fx-alignment: center;
+}
+
+.menu-label {
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
+    -fx-end-margin: 25px;
+}
+
+.menu-combo-box {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-background-color: #fff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 1, 0, 2, 2);
+}
+
+#game-title {
+    -fx-font-size: 30px;
+    -fx-font-weight: bold;
+}
+
+#game-duration-slider {
+    -fx-padding: 0 20px;
+}
+
+#start-game-button {
+    -fx-font-size: 18px;
+    -fx-font-weight: bold;
+    -fx-background-color: #fff;
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 0, 0, 0.5), 1, 0, 2, 2);
 }
 
 #game-pane {

@@ -2,6 +2,7 @@ package petryka.cezary.fallingsquaresgame;
 
 import javafx.animation.AnimationTimer;
 import javafx.application.Application;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -10,6 +11,7 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
+import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import petryka.cezary.fallingsquaresgame.enums.SquareCreationProbability;
 import petryka.cezary.fallingsquaresgame.enums.SquareSpeed;
@@ -119,10 +121,17 @@ public class FallingSquaresGame extends Application {
     }
 
     private VBox generateMenu() {
-        var menu = new VBox();
+        var menu = new VBox(20);
+        menu.setAlignment(Pos.CENTER);
+
+        // Game title
+        var gameTitle = new Label("Falling Squares Game");
+        gameTitle.setId("game-title");
+        menu.getChildren().add(gameTitle);
 
         // Game duration
         var gameDurationSlider = new Slider(10, 60, 20);
+        gameDurationSlider.setId("game-duration-slider");
         gameDurationSlider.setShowTickLabels(true);
         gameDurationSlider.setShowTickMarks(true);
         gameDurationSlider.setMajorTickUnit(10);
@@ -130,32 +139,50 @@ public class FallingSquaresGame extends Application {
         gameDurationSlider.setSnapToTicks(true);
 
         var gameDurationLabel = new Label("Game duration");
+        gameDurationLabel.getStyleClass().add("menu-label");
         gameDurationLabel.setLabelFor(gameDurationSlider);
 
-        menu.getChildren().addAll(gameDurationLabel, gameDurationSlider);
+        var gameDurationPane = new VBox(5);
+        gameDurationPane.setAlignment(Pos.CENTER);
+        gameDurationPane.getChildren().addAll(gameDurationLabel, gameDurationSlider);
+
+        menu.getChildren().addAll(gameDurationPane);
 
         // Squares speed
         var squaresSpeed = new ComboBox<SquareSpeed>();
+        squaresSpeed.getStyleClass().add("menu-combo-box");
         squaresSpeed.getItems().addAll(SquareSpeed.values());
         squaresSpeed.setValue(SquareSpeed.STANDARD);
 
         var squaresSpeedLabel = new Label("Squares speed");
+        squaresSpeedLabel.getStyleClass().add("menu-label");
         squaresSpeedLabel.setLabelFor(squaresSpeed);
 
-        menu.getChildren().addAll(squaresSpeedLabel, squaresSpeed);
+        var squaresSpeedPane = new VBox(5);
+        squaresSpeedPane.setAlignment(Pos.CENTER);
+        squaresSpeedPane.getChildren().addAll(squaresSpeedLabel, squaresSpeed);
+
+        menu.getChildren().addAll(squaresSpeedPane);
 
         // Squares creation probability
         var squaresCreationProbability = new ComboBox<SquareCreationProbability>();
+        squaresCreationProbability.getStyleClass().add("menu-combo-box");
         squaresCreationProbability.getItems().addAll(SquareCreationProbability.values());
         squaresCreationProbability.setValue(SquareCreationProbability.STANDARD);
 
         var squaresCreationProbabilityLabel = new Label("Squares creation probability");
+        squaresCreationProbabilityLabel.getStyleClass().add("menu-label");
         squaresCreationProbabilityLabel.setLabelFor(squaresCreationProbability);
 
-        menu.getChildren().addAll(squaresCreationProbabilityLabel, squaresCreationProbability);
+        var squaresCreationProbabilityPane = new VBox(5);
+        squaresCreationProbabilityPane.setAlignment(Pos.CENTER);
+        squaresCreationProbabilityPane.getChildren().addAll(squaresCreationProbabilityLabel, squaresCreationProbability);
+
+        menu.getChildren().addAll(squaresCreationProbabilityPane);
 
         // Start the game button
         var startGameButton = new Button("Start Game");
+        startGameButton.setId("start-game-button");
         startGameButton.setOnAction(event -> {
             // Set game parameters
             this.gameDuration = (int)gameDurationSlider.getValue();
