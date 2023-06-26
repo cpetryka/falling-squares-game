@@ -120,14 +120,13 @@ public class FallingSquaresGame extends Application {
         };
     }
 
-    private VBox generateMenu() {
-        var menu = new VBox(20);
-        menu.setAlignment(Pos.CENTER);
+    private Pane generateMenu() {
+        var menu = new BorderPane();
 
         // Game title
         var gameTitle = new Label("Falling Squares Game");
         gameTitle.setId("game-title");
-        menu.getChildren().add(gameTitle);
+        menu.setTop(gameTitle);
 
         // Game duration
         var gameDurationSlider = new Slider(10, 60, 20);
@@ -146,8 +145,6 @@ public class FallingSquaresGame extends Application {
         gameDurationPane.setAlignment(Pos.CENTER);
         gameDurationPane.getChildren().addAll(gameDurationLabel, gameDurationSlider);
 
-        menu.getChildren().addAll(gameDurationPane);
-
         // Squares speed
         var squaresSpeed = new ComboBox<SquareSpeed>();
         squaresSpeed.getStyleClass().add("menu-combo-box");
@@ -161,8 +158,6 @@ public class FallingSquaresGame extends Application {
         var squaresSpeedPane = new VBox(5);
         squaresSpeedPane.setAlignment(Pos.CENTER);
         squaresSpeedPane.getChildren().addAll(squaresSpeedLabel, squaresSpeed);
-
-        menu.getChildren().addAll(squaresSpeedPane);
 
         // Squares creation probability
         var squaresCreationProbability = new ComboBox<SquareCreationProbability>();
@@ -178,7 +173,13 @@ public class FallingSquaresGame extends Application {
         squaresCreationProbabilityPane.setAlignment(Pos.CENTER);
         squaresCreationProbabilityPane.getChildren().addAll(squaresCreationProbabilityLabel, squaresCreationProbability);
 
-        menu.getChildren().addAll(squaresCreationProbabilityPane);
+        var menuCenter = new VBox(30);
+        menuCenter.setAlignment(Pos.CENTER);
+
+        menuCenter.getChildren().addAll(gameDurationPane);
+        menuCenter.getChildren().addAll(squaresSpeedPane);
+        menuCenter.getChildren().addAll(squaresCreationProbabilityPane);
+        menu.setCenter(menuCenter);
 
         // Start the game button
         var startGameButton = new Button("Start Game");
@@ -199,7 +200,8 @@ public class FallingSquaresGame extends Application {
             // Start the game loop
             gameLoop.start();
         });
-        menu.getChildren().add(startGameButton);
+        // menuCenter.getChildren().add(startGameButton);
+        menu.setBottom(startGameButton);
 
         return menu;
     }
