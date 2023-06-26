@@ -11,7 +11,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
-import javafx.scene.text.Text;
 import javafx.stage.Stage;
 import petryka.cezary.fallingsquaresgame.enums.SquareCreationProbability;
 import petryka.cezary.fallingsquaresgame.enums.SquareSpeed;
@@ -63,7 +62,6 @@ public class FallingSquaresGame extends Application {
 
         // Create the menu pane
         menuPane = generateMenu();
-        menuPane.setId("menu-pane");
         menuPane.setPrefSize(windowWidth, windowHeight);
 
         // Create the game pane
@@ -122,11 +120,18 @@ public class FallingSquaresGame extends Application {
 
     private Pane generateMenu() {
         var menu = new BorderPane();
+        menu.setId("menu");
 
         // Game title
         var gameTitle = new Label("Falling Squares Game");
         gameTitle.setId("game-title");
-        menu.setTop(gameTitle);
+
+        // Add HBox to center the game title
+        var gameTitleHBox = new HBox();
+        gameTitleHBox.setAlignment(Pos.CENTER);
+        gameTitleHBox.getChildren().add(gameTitle);
+
+        menu.setTop(gameTitleHBox);
 
         // Game duration
         var gameDurationSlider = new Slider(10, 60, 20);
@@ -165,7 +170,7 @@ public class FallingSquaresGame extends Application {
         squaresCreationProbability.getItems().addAll(SquareCreationProbability.values());
         squaresCreationProbability.setValue(SquareCreationProbability.STANDARD);
 
-        var squaresCreationProbabilityLabel = new Label("Squares creation probability");
+        var squaresCreationProbabilityLabel = new Label("Squares number");
         squaresCreationProbabilityLabel.getStyleClass().add("menu-label");
         squaresCreationProbabilityLabel.setLabelFor(squaresCreationProbability);
 
@@ -173,7 +178,8 @@ public class FallingSquaresGame extends Application {
         squaresCreationProbabilityPane.setAlignment(Pos.CENTER);
         squaresCreationProbabilityPane.getChildren().addAll(squaresCreationProbabilityLabel, squaresCreationProbability);
 
-        var menuCenter = new VBox(30);
+        // Menu center
+        var menuCenter = new VBox(25);
         menuCenter.setAlignment(Pos.CENTER);
 
         menuCenter.getChildren().addAll(gameDurationPane);
@@ -200,8 +206,13 @@ public class FallingSquaresGame extends Application {
             // Start the game loop
             gameLoop.start();
         });
-        // menuCenter.getChildren().add(startGameButton);
-        menu.setBottom(startGameButton);
+
+        var startGameButtonHBox = new HBox();
+        startGameButtonHBox.setAlignment(Pos.CENTER);
+        startGameButtonHBox.setPadding(new Insets(15));
+        startGameButtonHBox.getChildren().add(startGameButton);
+
+        menu.setBottom(startGameButtonHBox);
 
         return menu;
     }
