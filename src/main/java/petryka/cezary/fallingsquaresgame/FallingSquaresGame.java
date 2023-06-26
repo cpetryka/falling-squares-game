@@ -11,6 +11,8 @@ import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.stage.Stage;
+import petryka.cezary.fallingsquaresgame.enums.SquareCreationProbability;
+import petryka.cezary.fallingsquaresgame.enums.SquareSpeed;
 
 import java.util.ArrayList;
 import java.util.Iterator;
@@ -25,22 +27,28 @@ public class FallingSquaresGame extends Application {
     private int windowHeight = 500;
     private int panelHeight = 440;
     private final int squareSize = 40;
-    private int squareSpeed = 3;
-    private int gameDuration = 20; // in seconds
-    private double squareCreationProbability = 0.03;
 
-    // Pane and label of the game
+    // Layouts, controls, ...
+    BorderPane root;
+    Pane menuPane;
     private Pane gamePane;
     private Label scoreLabel;
 
     // Game variables
+    private int squareSpeed;
+    private int gameDuration;
+    private double squareCreationProbability;
+
     private int killedSquares;
     private int missedSquares;
     private int totalSquares;
+
+    private List<Rectangle> squares;
     private boolean gameOver;
     private long startTime;
 
-    private List<Rectangle> squares;
+    // Helpers
+    AnimationTimer gameLoop;
 
     @Override
     public void start(Stage primaryStage) {
@@ -50,6 +58,11 @@ public class FallingSquaresGame extends Application {
         totalSquares = 0;
         missedSquares = 0;
         gameOver = false;
+
+        // Create the menu pane
+        menuPane = generateMenu();
+        menuPane.setId("menu-pane");
+        menuPane.setPrefSize(windowWidth, windowHeight);
 
         // Create the game pane
         gamePane = new Pane();
@@ -62,11 +75,12 @@ public class FallingSquaresGame extends Application {
         scoreLabel.setPrefSize(windowWidth, (double) windowHeight - panelHeight);
         scoreLabel.setAlignment(Pos.CENTER);
 
-        // Create the root pane and add the game pane and the score label to it
-        BorderPane root = new BorderPane();
+        // Create the root element
+        // menuPane is assigned to the root element at the beginning
+        // After choosing the game parameters gamePane and scoreLabel are assigned to the root element
+        root = new BorderPane();
         root.setId("root");
-        root.setCenter(gamePane);
-        root.setBottom(scoreLabel);
+        root.setCenter(menuPane);
 
         // Create the scene and set it to the stage
         Scene scene = new Scene(root, windowWidth, windowHeight);
@@ -92,8 +106,8 @@ public class FallingSquaresGame extends Application {
         primaryStage.getIcons().add(new Image("file:src/main/java/petryka/cezary/fallingsquaresgame/images/icons/icon.png"));
         primaryStage.show();
 
-        // Start the game and create an animation timer that will update the game
-        var gameLoop = new AnimationTimer() {
+        // Create an animation timer that will update the game
+        gameLoop = new AnimationTimer() {
             @Override
             public void handle(long now) {
                 // There's no sense in updating the game if the game is over
@@ -102,9 +116,65 @@ public class FallingSquaresGame extends Application {
                 }
             }
         };
+    }
 
-        startTime = System.currentTimeMillis();
-        gameLoop.start();
+    private VBox generateMenu() {
+        var menu = new VBox();
+
+        // Game duration
+        var gameDurationSlider = new Slider(10, 60, 20);
+        gameDurationSlider.setShowTickLabels(true);
+        gameDurationSlider.setShowTickMarks(true);
+        gameDurationSlider.setMajorTickUnit(10);
+        gameDurationSlider.setMinorTickCount(1);
+        gameDurationSlider.setSnapToTicks(true);
+
+        var gameDurationLabel = new Label("Game duration");
+        gameDurationLabel.setLabelFor(gameDurationSlider);
+
+        menu.getChildren().addAll(gameDurationLabel, gameDurationSlider);
+
+        // Squares speed
+        var squaresSpeed = new ComboBox<SquareSpeed>();
+        squaresSpeed.getItems().addAll(SquareSpeed.values());
+        squaresSpeed.setValue(SquareSpeed.STANDARD);
+
+        var squaresSpeedLabel = new Label("Squares speed");
+        squaresSpeedLabel.setLabelFor(squaresSpeed);
+
+        menu.getChildren().addAll(squaresSpeedLabel, squaresSpeed);
+
+        // Squares creation probability
+        var squaresCreationProbability = new ComboBox<SquareCreationProbability>();
+        squaresCreationProbability.getItems().addAll(SquareCreationProbability.values());
+        squaresCreationProbability.setValue(SquareCreationProbability.STANDARD);
+
+        var squaresCreationProbabilityLabel = new Label("Squares creation probability");
+        squaresCreationProbabilityLabel.setLabelFor(squaresCreationProbability);
+
+        menu.getChildren().addAll(squaresCreationProbabilityLabel, squaresCreationProbability);
+
+        // Start the game button
+        var startGameButton = new Button("Start Game");
+        startGameButton.setOnAction(event -> {
+            // Set game parameters
+            this.gameDuration = (int)gameDurationSlider.getValue();
+            this.squareSpeed = squaresSpeed.getValue().getSpeed();
+            this.squareCreationProbability = squaresCreationProbability.getValue().getProbability();
+
+            // Remove the menu pane from the root element and add the game pane and scoreLabel
+            root.setCenter(gamePane);
+            root.setBottom(scoreLabel);
+
+            // Assign current time
+            startTime = System.currentTimeMillis();
+
+            // Start the game loop
+            gameLoop.start();
+        });
+        menu.getChildren().add(startGameButton);
+
+        return menu;
     }
 
     // Update the game
