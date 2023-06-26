@@ -4,8 +4,7 @@ import javafx.animation.AnimationTimer;
 import javafx.application.Application;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.*;
@@ -21,14 +20,14 @@ import java.util.Random;
 public class FallingSquaresGame extends Application {
     private static final Random random = new Random();
 
-    // Technical constants
-    private static int WINDOW_WIDTH = 400;
-    private static int WINDOW_HEIGHT = 500;
-    private static int PANEL_HEIGHT = 440;
-    private static final int SQUARE_SIZE = 40;
-    private static final int SQUARE_SPEED = 3;
-    private static final int GAME_DURATION = 20; // in seconds
-    private static final double SQUARE_CREATION_PROBABILITY = 0.03;
+    // Technical parameters
+    private int windowWidth = 400;
+    private int windowHeight = 500;
+    private int panelHeight = 440;
+    private final int squareSize = 40;
+    private int squareSpeed = 3;
+    private int gameDuration = 20; // in seconds
+    private double squareCreationProbability = 0.03;
 
     // Pane and label of the game
     private Pane gamePane;
@@ -55,12 +54,12 @@ public class FallingSquaresGame extends Application {
         // Create the game pane
         gamePane = new Pane();
         gamePane.setId("game-pane");
-        gamePane.setPrefSize(WINDOW_WIDTH, PANEL_HEIGHT);
+        gamePane.setPrefSize(windowWidth, panelHeight);
 
         // Create the score label
         scoreLabel = new Label("Current score: 0%");
         scoreLabel.setId("score-label");
-        scoreLabel.setPrefSize(WINDOW_WIDTH, (double)WINDOW_HEIGHT - PANEL_HEIGHT);
+        scoreLabel.setPrefSize(windowWidth, (double) windowHeight - panelHeight);
         scoreLabel.setAlignment(Pos.CENTER);
 
         // Create the root pane and add the game pane and the score label to it
@@ -70,22 +69,22 @@ public class FallingSquaresGame extends Application {
         root.setBottom(scoreLabel);
 
         // Create the scene and set it to the stage
-        Scene scene = new Scene(root, WINDOW_WIDTH, WINDOW_HEIGHT);
+        Scene scene = new Scene(root, windowWidth, windowHeight);
         scene.getStylesheets().add("file:src/main/java/petryka/cezary/fallingsquaresgame/style/style.css");
 
         // When the width of the scene changes, the width of the game pane and the score label must change accordingly
         scene.widthProperty().addListener((observable, oldValue, newValue) -> {
-            WINDOW_WIDTH = newValue.intValue();
-            gamePane.setPrefWidth(WINDOW_WIDTH);
-            scoreLabel.setPrefWidth(WINDOW_WIDTH);
+            windowWidth = newValue.intValue();
+            gamePane.setPrefWidth(windowWidth);
+            scoreLabel.setPrefWidth(windowWidth);
         });
 
         // When the height of the scene changes, the height of the game pane and the score label must change accordingly
         scene.heightProperty().addListener((observable, oldValue, newValue) -> {
-            WINDOW_HEIGHT = newValue.intValue();
-            PANEL_HEIGHT = newValue.intValue() - (int)scoreLabel.getPrefHeight();
-            gamePane.setPrefHeight(PANEL_HEIGHT);
-            scoreLabel.setPrefHeight(newValue.doubleValue() - PANEL_HEIGHT);
+            windowHeight = newValue.intValue();
+            panelHeight = newValue.intValue() - (int)scoreLabel.getPrefHeight();
+            gamePane.setPrefHeight(panelHeight);
+            scoreLabel.setPrefHeight(newValue.doubleValue() - panelHeight);
         });
 
         primaryStage.setScene(scene);
@@ -113,13 +112,13 @@ public class FallingSquaresGame extends Application {
         // Check if the game should end
         long elapsedTime = (System.currentTimeMillis() - startTime) / 1000;
 
-        if (elapsedTime >= GAME_DURATION) {
+        if (elapsedTime >= gameDuration) {
             endGame();
             return;
         }
 
         // Create a square with a certain probability
-        if (random.nextDouble() < SQUARE_CREATION_PROBABILITY) {
+        if (random.nextDouble() < squareCreationProbability) {
             createSquare();
         }
 
@@ -127,9 +126,9 @@ public class FallingSquaresGame extends Application {
         Iterator<Rectangle> iterator = squares.iterator();
         while (iterator.hasNext()) {
             Rectangle square = iterator.next();
-            square.setLayoutY(square.getLayoutY() + SQUARE_SPEED); // Move the square down
+            square.setLayoutY(square.getLayoutY() + squareSpeed); // Move the square down
 
-            if (square.getLayoutY() >= (PANEL_HEIGHT - SQUARE_SIZE)) {
+            if (square.getLayoutY() >= (panelHeight - squareSize)) {
                 iterator.remove();
                 gamePane.getChildren().remove(square);
                 missedSquares++;
@@ -140,8 +139,8 @@ public class FallingSquaresGame extends Application {
 
     // Create a square and add it to the game pane at a random position
     private void createSquare() {
-        Rectangle square = new Rectangle(SQUARE_SIZE, SQUARE_SIZE, Color.DARKBLUE);
-        square.setLayoutX(random.nextInt(WINDOW_WIDTH - SQUARE_SIZE));
+        Rectangle square = new Rectangle(squareSize, squareSize, Color.DARKBLUE);
+        square.setLayoutX(random.nextInt(windowWidth - squareSize));
         square.setOnMousePressed(this::handleMouseClick);
         gamePane.getChildren().add(square);
         squares.add(square);
